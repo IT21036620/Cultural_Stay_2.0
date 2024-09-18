@@ -10,6 +10,7 @@ import TouristAttractionRouter from './TouristAttraction/TouristAttraction.js'
 import suggestionRouter from './TouristAttraction/suggestions.js'
 import FeedBackRouter from './feedback/feedback.js'
 import UserRouter from './Tourists/user.js'
+import facebookAuthRouter from './facebookAuth.js'
 
 const router = express.Router()
 
@@ -23,5 +24,6 @@ router.use('/TASites', TouristAttractionRouter)
 router.use('/suggestion', suggestionRouter)
 router.use('/feedback', FeedBackRouter)
 router.use('/user', UserRouter)
+router.use('/auth', facebookAuthRouter)
 
 export default router
