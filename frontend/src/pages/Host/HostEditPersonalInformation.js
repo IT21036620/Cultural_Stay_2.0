@@ -21,8 +21,8 @@ const EditPersonalInformation = () => {
     const fetchHostData = async () => {
       try {
         const response = await axios.get(
-          // `http://localhost:4000/api/hostLocal/${id}`
-          `https://fine-teal-ostrich-tam.cyclic.app/api/hostLocal/${id}`
+          `http://localhost:4000/api/hostLocal/${id}`
+          // `https://fine-teal-ostrich-tam.cyclic.app/api/hostLocal/${id}`
         )
         console.log('Host data received:', response.data)
 
@@ -56,8 +56,8 @@ const EditPersonalInformation = () => {
 
     try {
       const response = await axios.patch(
-        // `http://localhost:4000/api/hostLocal/${id}`,
-        `https://fine-teal-ostrich-tam.cyclic.app/api/hostLocal/${id}`,
+        `http://localhost:4000/api/hostLocal/${id}`,
+        // `https://fine-teal-ostrich-tam.cyclic.app/api/hostLocal/${id}`,
         updatedData
       )
       console.log('Profile updated successfully:', response.data)

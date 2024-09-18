@@ -31,7 +31,8 @@ const RecommendAttraction = () => {
       })
 
       const response = await axios.post(
-        'https://fine-teal-ostrich-tam.cyclic.app/api/suggestion',
+        // 'https://fine-teal-ostrich-tam.cyclic.app/api/suggestion',
+        'http://localhost:4000/api/suggestion',
         formData,
         {
           headers: {

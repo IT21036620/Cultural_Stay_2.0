@@ -75,8 +75,8 @@ const HostDashboardPlaceUpdate = () => {
     async function getAccommodation() {
       try {
         const response = await fetch(
-          // `http://localhost:4000/api/accommodation/${hostId}`
-          `https://fine-teal-ostrich-tam.cyclic.app/api/accommodation/${hostId}`
+          `http://localhost:4000/api/accommodation/${hostId}`
+          // `https://fine-teal-ostrich-tam.cyclic.app/api/accommodation/${hostId}`
         )
 
         const data = await response.json()
