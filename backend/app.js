@@ -13,7 +13,13 @@ dotenv.config()
 const app = express()
 app.use(express.json({ limit: '1mb' }))
 
-app.use(cors())
+const corsOptions = {
+  origin: ['http://localhost:3000', 'https://cultural-stay.netlify.app'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+  credentials: true,
+  optionsSuccessStatus: 200,
+}
+app.use(cors(corsOptions))
 
 // Session Middleware
 app.use(
