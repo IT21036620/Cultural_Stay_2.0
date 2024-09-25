@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import passport from 'passport'
 import session from 'express-session'
+import helmet from 'helmet'
 
 import connectDB from './config/dbconnect.js'
 import Router from './routes/index.js'
@@ -12,6 +13,22 @@ dotenv.config()
 
 const app = express()
 app.use(express.json({ limit: '1mb' }))
+
+// hotfix: lack of https redirection
+app.use((req, res, next) => {
+  if (req.secure || req.headers['x-forwarded-proto'] === 'https') {
+    return next()
+  }
+  res.redirect(`https://${req.headers.host}${req.url}`)
+})
+
+// Enable HSTS (HTTP Strict Transport Security)
+app.use(
+  helmet.hsts({
+    maxAge: 31536000, // 1 year in seconds
+    includeSubDomains: true,
+  })
+)
 
 // hotfix: cors vulnerabilities
 const corsOptions = {
