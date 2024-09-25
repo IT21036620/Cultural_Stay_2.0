@@ -9,8 +9,8 @@ const AccommodationHome = () => {
   useEffect(() => {
     function fetchData() {
       axios
-        // .get('http://localhost:4000/api/accommodation')
-        .get('https://fine-teal-ostrich-tam.cyclic.app/api/accommodation')
+        .get('http://localhost:4000/api/accommodation')
+        // .get('https://fine-teal-ostrich-tam.cyclic.app/api/accommodation')
         .then((res) => {
           if (Array.isArray(res.data.accommodation)) {
             setCulturalStayHotels(res.data.accommodation)

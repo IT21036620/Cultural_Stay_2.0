@@ -119,7 +119,8 @@ const AttractionsList = () => {
 
   const fetchAttractions = async () => {
     try {
-      const response = await axios.get('https://fine-teal-ostrich-tam.cyclic.app/api/TASites/')
+      // const response = await axios.get('https://fine-teal-ostrich-tam.cyclic.app/api/TASites/')
+      const response = await axios.get('http://localhost:4000/api/TASites/')
       setAttractions(response.data.touristAttractions)
     } catch (error) {
       console.error(error)
@@ -128,7 +129,8 @@ const AttractionsList = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://fine-teal-ostrich-tam.cyclic.app/api/TASites/${id}`)
+      // await axios.delete(`https://fine-teal-ostrich-tam.cyclic.app/api/TASites/${id}`)
+      await axios.delete(`http://localhost:4000/api/TASites/${id}`)
       fetchAttractions()
     } catch (error) {
       console.error(error)
@@ -143,7 +145,8 @@ const AttractionsList = () => {
 
   const handleUpdate = async (id) => {
     try {
-      await axios.put(`https://fine-teal-ostrich-tam.cyclic.app/api/TASites/${id}`, {
+      // await axios.put(`https://fine-teal-ostrich-tam.cyclic.app/api/TASites/${id}`, {
+        await axios.put(`http://localhost:4000/api/TASites/${id}`, {
         name,
         description,
       })

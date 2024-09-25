@@ -62,7 +62,8 @@ export default function Search() {
   useEffect(() => {
     async function getData() {
       await axios
-        .get(`https://fine-teal-ostrich-tam.cyclic.app/api/feedback`)
+        // .get(`https://fine-teal-ostrich-tam.cyclic.app/api/feedback`)
+        .get(`http://localhost:4000/api/feedback`)
         .then((res) => {
           console.log(res.data)
           setData(res.data.modifiedResults)

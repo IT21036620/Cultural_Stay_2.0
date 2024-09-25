@@ -26,7 +26,8 @@ export default function Login() {
 
     try {
       const response = await axios.post(
-        'https://fine-teal-ostrich-tam.cyclic.app/api/user/login',
+        // 'https://fine-teal-ostrich-tam.cyclic.app/api/user/login',
+        'http://localhost:4000/api/user/login',
         { user: user, pwd: pwd }
       )
 

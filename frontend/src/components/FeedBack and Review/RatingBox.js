@@ -15,7 +15,8 @@ export default function RatingBox({ id }) {
     async function getComments() {
       try {
         const response = await axios.get(
-          `https://fine-teal-ostrich-tam.cyclic.app/api/feedback/${id}`
+          // `https://fine-teal-ostrich-tam.cyclic.app/api/feedback/${id}`
+          `http://localhost:4000/api/feedback/${id}`
         )
         console.log(response)
         const ratingsList = response.data.result.ratings_list
@@ -43,7 +44,8 @@ export default function RatingBox({ id }) {
 
     try {
       const response = await axios.patch(
-        `https://fine-teal-ostrich-tam.cyclic.app/api/feedback/ratings/${id}`,
+        // `https://fine-teal-ostrich-tam.cyclic.app/api/feedback/ratings/${id}`,
+        `http://localhost:4000/api/feedback/ratings/${id}`,
         { rating: { val: value, postedBy: auth.user } }
       )
 
