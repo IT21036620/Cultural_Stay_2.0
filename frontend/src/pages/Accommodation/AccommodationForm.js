@@ -152,8 +152,35 @@ const AccommodationForm = () => {
   //     })
   // }
 
+  // const handleImageChange = (e) => {
+  //   setImages([...images, ...e.target.files])
+  // }
+
+  // Add Frontend File Validation
   const handleImageChange = (e) => {
-    setImages([...images, ...e.target.files])
+    const allowedExtensions = ['image/jpeg', 'image/png'] // Only allow certain image types
+    const maxFileSize = 5 * 1024 * 1024 // 5MB file size limit
+
+    const files = [...e.target.files]
+
+    const validFiles = files.filter((file) => {
+      if (!allowedExtensions.includes(file.type)) {
+        setError('Only JPEG and PNG files are allowed.')
+        return false
+      }
+      if (file.size > maxFileSize) {
+        setError('File size cannot exceed 5MB.')
+        return false
+      }
+      return true
+    })
+
+    if (validFiles.length) {
+      setImages(validFiles) // Set valid images
+      setError('') // Clear error if any
+    } else {
+      setImages([]) // Clear images if invalid
+    }
   }
 
   return (
