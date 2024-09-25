@@ -101,24 +101,18 @@ export const getAllFood = async (req, res) => {
   const { name, sinhala_name, restaurants, sort, fields } = req.query
   const queryObject = {}
 
-  if (name) {
+  //hotfix: ReDoS vulnerability by limitting lenth of user input
+  if (name && name.length <= 30) {
     queryObject.name = { $regex: name, $options: 'i' }
   }
 
-  if (sinhala_name) {
+  if (sinhala_name && sinhala_name.length <= 30) {
     queryObject.sinhala_name = { $regex: sinhala_name, $options: 'i' }
   }
 
-  //   if (restaurants && Array.isArray(restaurants)) {
-  //     queryObject.restaurants = { $in: restaurants }
-  //   }
-
-  if (restaurants) {
-    // queryObject.restaurants = { $eq: restaurants } // case-sensitive match
+  if (restaurants && restaurants.length <= 30) {
     queryObject.restaurants = { $regex: restaurants, $options: 'i' }
   }
-
-  console.log(queryObject)
 
   let result = Food.find(queryObject) // (req.query)
   // sort
