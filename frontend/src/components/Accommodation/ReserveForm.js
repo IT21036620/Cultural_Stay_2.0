@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import axios from 'axios'
+import DOMPurify from 'dompurify'
 
 const ReserveForm = () => {
   const [rp_name, setRp_name] = useState('')
@@ -16,19 +17,31 @@ const ReserveForm = () => {
   const currentDate = new Date().toISOString().split('T')[0]
 
   function sendData(e) {
-    e.preventDefault() // to execute only the function "sendData" without submitting data.
+    e.preventDefault()
 
     const newReservation = {
-      rp_name,
-      rp_email,
-      rp_phone,
-      rp_languages,
-      rp_country,
-      reserve_from,
-      reserve_to,
-      description,
-      rp_noofPassengers,
+      // Used Sanitizer method to get rid of XSS vulnerabilities
+      rp_name: DOMPurify.sanitize(rp_name),
+      rp_email: DOMPurify.sanitize(rp_email),
+      rp_phone: DOMPurify.sanitize(rp_phone),
+      rp_languages: DOMPurify.sanitize(rp_languages),
+      rp_country: DOMPurify.sanitize(rp_country),
+      reserve_from: reserve_from,
+      reserve_to: reserve_to,
+      description: DOMPurify.sanitize(description),
+      rp_noofPassengers: rp_noofPassengers,
       hostId,
+
+      // rp_name,
+      // rp_email,
+      // rp_phone,
+      // rp_languages,
+      // rp_country,
+      // reserve_from,
+      // reserve_to,
+      // description,
+      // rp_noofPassengers,
+      // hostId,
     }
 
     axios
@@ -41,6 +54,7 @@ const ReserveForm = () => {
         console.log('Success', newReservation)
         window.alert('Reservation Complete')
         window.location.reload()
+
         // Reset the form values
         setRp_name('')
         setRp_email('')
@@ -54,6 +68,9 @@ const ReserveForm = () => {
       })
       .catch((err) => {
         console.log('error')
+
+        // Use a proper error messages when the error is thrown
+        window.alert('Failed to submit reservation. Please try again later.')
       })
   }
 
