@@ -16,18 +16,15 @@ app.use(express.json({ limit: '1mb' }))
 
 // hotfix: lack of https redirection
 app.use((req, res, next) => {
-  // checking if the request is secure or if the protocol is HTTPS
+  // Check if the request is secure or if the protocol is HTTPS
   if (req.secure || req.headers['x-forwarded-proto'] === 'https') {
     return next()
   }
 
-  const allowedHosts = ['cultural-stay.netlify.app']
-
-  // predefined host
-  const defaultHost = allowedHosts[0]
-
-  // redirect to HTTPS using the default host
-  return res.redirect(`https://${defaultHost}${req.url}`)
+  res.status(403).send({
+    error: 'HTTPS required',
+    message: 'This endpoint requires a secure connection. Please use HTTPS.',
+  })
 })
 
 // Enable HSTS (HTTP Strict Transport Security)
