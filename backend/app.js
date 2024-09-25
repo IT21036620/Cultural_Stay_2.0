@@ -23,11 +23,11 @@ app.use((req, res, next) => {
 
   const allowedHosts = ['cultural-stay.netlify.app']
 
-  if (allowedHosts.includes(req.headers.host)) {
-    return res.redirect(`https://${req.headers.host}${req.url}`)
-  }
-  // continue without redirecting if the host is not allowed
-  next()
+  // predefined host
+  const defaultHost = allowedHosts[0]
+
+  // redirect to HTTPS using the default host
+  return res.redirect(`https://${defaultHost}${req.url}`)
 })
 
 // Enable HSTS (HTTP Strict Transport Security)
