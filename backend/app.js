@@ -16,10 +16,18 @@ app.use(express.json({ limit: '1mb' }))
 
 // hotfix: lack of https redirection
 app.use((req, res, next) => {
+  // checking if the request is secure or if the protocol is HTTPS
   if (req.secure || req.headers['x-forwarded-proto'] === 'https') {
     return next()
   }
-  res.redirect(`https://${req.headers.host}${req.url}`)
+
+  const allowedHosts = ['cultural-stay.netlify.app']
+
+  if (allowedHosts.includes(req.headers.host)) {
+    return res.redirect(`https://${req.headers.host}${req.url}`)
+  }
+  // continue without redirecting if the host is not allowed
+  next()
 })
 
 // Enable HSTS (HTTP Strict Transport Security)
