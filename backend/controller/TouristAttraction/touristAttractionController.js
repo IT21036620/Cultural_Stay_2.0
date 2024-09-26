@@ -52,15 +52,15 @@ export const getAllTouristAttractions = async (req, res) => {
 
   // hotfix: Validate and sanitize inputs
   if (name) {
-    const sanitizedName = escape(name);
+    const sanitizedName = escape(name.toString());
     queryObject.name = { $regex: sanitizedName, $options: 'i' };
   }
   if (address) {
-    const sanitizedAddress = escape(address);
+    const sanitizedAddress = escape(address.toString());
     queryObject.address = { $regex: sanitizedAddress, $options: 'i' };
   }
   if (area) {
-    const sanitizedArea = escape(area);
+    const sanitizedArea = escape(area.toString());
     queryObject.area = { $regex: sanitizedArea, $options: 'i' };
   }
   let result = TouristAttraction.find(queryObject);

@@ -108,17 +108,17 @@ export const getAllFood = async (req, res) => {
   //hotfix: ReDoS vulnerability by limitting lenth of user input
   //hotfix: sanitizing user inputs
   if (name && name.length <= 30) {
-    const sanitizedName = escape(name);
+    const sanitizedName = escape(name.toString());
     queryObject.name = { $regex: sanitizedName, $options: 'i' };
   }
 
   if (sinhala_name && sinhala_name.length <= 30) {
-    const sanitizedSinhalaName = escape(sinhala_name);
+    const sanitizedSinhalaName = escape(sinhala_name.toString());
     queryObject.sinhala_name = { $regex: sanitizedSinhalaName, $options: 'i' };
   }
 
   if (restaurants && restaurants.length <= 30) {
-    const sanitizedRestaurants = escape(restaurants);
+    const sanitizedRestaurants = escape(restaurants.toString());
     queryObject.restaurants = { $regex: sanitizedRestaurants, $options: 'i' };
   }
 
