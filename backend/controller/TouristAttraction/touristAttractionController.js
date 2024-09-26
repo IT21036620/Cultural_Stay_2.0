@@ -50,7 +50,7 @@ export const getAllTouristAttractions = async (req, res) => {
   const { name, address, area, sort, fields } = req.query;
   const queryObject = {};
 
-  // Validate and sanitize inputs
+  // hotfix: Validate and sanitize inputs
   if (name) {
     const sanitizedName = escape(name);
     queryObject.name = { $regex: sanitizedName, $options: 'i' };
