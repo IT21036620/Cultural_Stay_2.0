@@ -3,6 +3,10 @@ import asyncWrapper from '../../middleware/food/async.js'
 import cloudinary from '../../config/cloudinary.js'
 import { createCustomError } from '../../errors/Food/custom-error.js'
 
+//hotfix: validation library
+import validator from 'validator';
+const { escape } = validator;
+
 // create a new restaurant with checking image file
 export const createRestaurant = asyncWrapper(async (req, res) => {
   // const image = []
@@ -168,21 +172,26 @@ export const getAllRestaurants = async (req, res) => {
   const { name, city, food, area, sort, fields, numericFilters } = req.query
   const queryObject = {}
 
-  if (name) {
-    queryObject.name = { $regex: name, $options: 'i' }
-  }
+//hotfix: sanitization for user inputs applied
+if (name) {
+  const sanitizedName = escape(name.toString());
+  queryObject.name = { $regex: sanitizedName, $options: 'i' };
+}
 
-  if (city) {
-    queryObject.city = { $regex: city, $options: 'i' }
-  }
+if (city) {
+  const sanitizedCity = escape(city).toString();
+  queryObject.city = { $regex: sanitizedCity, $options: 'i' };
+}
 
-  if (area) {
-    queryObject.area = { $regex: area, $options: 'i' }
-  }
+if (area) {
+  const sanitizedArea = escape(area.toString());
+  queryObject.area = { $regex: sanitizedArea, $options: 'i' };
+}
 
-  if (food) {
-    queryObject.food = { $regex: food, $options: 'i' }
-  }
+if (food) {
+  const sanitizedFood = escape(food.toString());
+  queryObject.food = { $regex: sanitizedFood, $options: 'i' };
+}
 
   if (numericFilters) {
     const operatorMap = {

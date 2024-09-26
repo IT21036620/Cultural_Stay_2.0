@@ -3,6 +3,9 @@ import User from '../../models/Tourists/User.js'
 import asyncWrapper from '../../middleware/food/async.js'
 import bcrypt from 'bcrypt'
 
+import validator from 'validator';
+const { escape } = validator;
+
 export const createUser = asyncWrapper(async (req, res) => {
   req.body.password = await bcrypt.hashSync(req.body.password, 10)
   const user = await User.create(req.body)
@@ -15,7 +18,10 @@ export const loginUser = asyncWrapper(async (req, res) => {
   if (!user || !pwd)
     return res.status(400).json({ msg: 'The username and password required' })
 
-  const foundUser = await User.findOne({ user_email: user })
+  //hotfix: Sanitize user input and find the user in the database
+  const sanitizedUser = escape(user.toString());
+  const foundUser = await User.findOne({ user_email: sanitizedUser });
+
   if (!foundUser) return res.status(401).json({ msg: 'user not found' })
 
   // password comparison

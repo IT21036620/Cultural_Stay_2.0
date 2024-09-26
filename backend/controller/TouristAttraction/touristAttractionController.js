@@ -1,46 +1,52 @@
 import TouristAttraction from '../../models/TouristAttraction/TouristAttraction.js'
 import cloudinary from '../../config/cloudinary.js'
+import validator from 'validator';
+const { escape } = validator;
 
 // get all tourist attractions with search and sort options passed as a query in the req
 export const getAllTouristAttractions = async (req, res) => {
-  const { name, address, area, sort, fields } = req.query
-  const queryObject = {}
+  const { name, address, area, sort, fields } = req.query;
+  const queryObject = {};
 
+  // hotfix: Validate and sanitize inputs
   if (name) {
-    queryObject.name = { $regex: name, $options: 'i' }
+    const sanitizedName = escape(name.toString());
+    queryObject.name = { $regex: sanitizedName, $options: 'i' };
   }
-
   if (address) {
-    queryObject.address = { $regex: address, $options: 'i' }
+    const sanitizedAddress = escape(address.toString());
+    queryObject.address = { $regex: sanitizedAddress, $options: 'i' };
   }
-
   if (area) {
-    queryObject.area = { $regex: area, $options: 'i' }
+    const sanitizedArea = escape(area.toString());
+    queryObject.area = { $regex: sanitizedArea, $options: 'i' };
   }
+  let result = TouristAttraction.find(queryObject);
 
-  // console.log(queryObject)
-
-  let result = TouristAttraction.find(queryObject)
-
-  // sort
+  // Sort validation
   if (sort) {
-    const sortList = sort.split(',').join(' ')
-    result = result.sort(sortList)
+    const allowedSortFields = ['name', 'address', 'area', 'createdAt'];
+    const sortList = sort.split(',').filter(field => allowedSortFields.includes(field)).join(' ');
+    if (sortList) {
+      result = result.sort(sortList);
+    }
   } else {
-    result = result.sort('createdAt')
+    result = result.sort('createdAt');
   }
 
+  // Fields validation
   if (fields) {
-    const fieldList = fields.split(',').join(' ')
-    result = result.select(fieldList)
+    const allowedFields = ['name', 'address', 'area', 'images', 'createdAt'];
+    const fieldList = fields.split(',').filter(field => allowedFields.includes(field)).join(' ');
+    if (fieldList) {
+      result = result.select(fieldList);
+    }
   }
 
-  const touristAttractions = await result
-
-  res
-    .status(200)
-    .json({ touristAttractions, nbHits: touristAttractions.length })
+  const touristAttractions = await result;
+  res.status(200).json({ touristAttractions, nbHits: touristAttractions.length });
 }
+
 
 // Get single tourists attractions by Id
 export const getTouristAttractionById = async (req, res) => {
