@@ -12,13 +12,12 @@ function App() {
   const [user, setUser] = useState([])
   const [profile, setProfile] = useState(null)
 
-  // Google login hook
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => setUser(codeResponse),
     onError: (error) => console.log('Login Failed:', error),
   })
 
-  // Fetching Google profile once the user is authenticated
+  // ------------------------------------fetching Google profile after authenticated-------------------------------------
   useEffect(() => {
     if (user?.access_token) {
       axios
@@ -36,7 +35,6 @@ function App() {
     }
   }, [user])
 
-  // Google logout function
   const logOut = () => {
     googleLogout()
     setProfile(null)
@@ -51,8 +49,8 @@ function App() {
         </BrowserRouter>
       </PopUpContext.Provider>
 
-      {/* Google login and logout section */}
-      <div>
+      {/*------------------------------- Google login and logout section ---------------------------------------*/}
+      {/* <div>
         {profile ? (
           <div>
             <img src={profile.picture} alt="User Profile" />
@@ -63,7 +61,7 @@ function App() {
         ) : (
           <button onClick={login}>Sign in with Google</button>
         )}
-      </div>
+      </div> */}
     </div>
   )
 }

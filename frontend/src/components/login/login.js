@@ -5,6 +5,7 @@ import useAuth from '../../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { GoogleLogin } from '@react-oauth/google'
+import { jwtDecode } from 'jwt-decode'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -70,7 +71,8 @@ export default function Login() {
   }
   //---------------------------------handle successful Google login response----------------------------------------------
   const handleGoogleLoginSuccess = (response) => {
-    console.log(response)
+    const credentialresponsedecode = jwtDecode(response.credential)
+    console.log(credentialresponsedecode)
   }
 
   const handleGoogleLoginFailure = (error) => {
