@@ -21,10 +21,11 @@ app.use((req, res, next) => {
     return next()
   }
 
-  res.status(403).send({
-    error: 'HTTPS required',
-    message: 'This endpoint requires a secure connection. Please use HTTPS.',
-  })
+  // res.status(403).send({
+  //   error: 'HTTPS required',
+  //   message: 'This endpoint requires a secure connection. Please use HTTPS.',
+  // })
+  next()
 })
 
 // Enable HSTS (HTTP Strict Transport Security)
