@@ -158,9 +158,9 @@ const AccommodationForm = () => {
 
   // Add Frontend File Validation
   const handleImageChange = (e) => {
-    const allowedExtensions = ['image/jpeg', 'image/png'] // Only allow certain image types
-    const maxFileSize = 5 * 1024 * 1024 // 5MB file size limit
-
+    const allowedExtensions = ['image/jpeg', 'image/png']
+    const maxFileSize = 5 * 1024 * 1024
+    // 5MB file
     const files = [...e.target.files]
 
     const validFiles = files.filter((file) => {
@@ -176,10 +176,10 @@ const AccommodationForm = () => {
     })
 
     if (validFiles.length) {
-      setImages(validFiles) // Set valid images
-      setError('') // Clear error if any
+      setImages(validFiles)
+      setError('')
     } else {
-      setImages([]) // Clear images if invalid
+      setImages([])
     }
   }
 

@@ -4,6 +4,7 @@ import altbgImg from '../../Assets/bgImg.jpg'
 import useAuth from '../../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { GoogleLogin } from '@react-oauth/google'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -67,6 +68,15 @@ export default function Login() {
       }
     }
   }
+  //---------------------------------handle successful Google login response----------------------------------------------
+  const handleGoogleLoginSuccess = (response) => {
+    console.log(response)
+  }
+
+  const handleGoogleLoginFailure = (error) => {
+    console.error('Google Login Failed:', error)
+  }
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 h-screen w-full">
       <div className="hidden sm:block">
@@ -128,6 +138,14 @@ export default function Login() {
           <button className="w-full my-5 py-2 bg-green-500 shadow-lg shadow-teal-500/50 hover:shadow-teal-500/40 text-white font-semibold rounded-lg">
             SIGN IN
           </button>
+
+          {/* ---------------------------Add Google Login----------------------------------------- */}
+          <div className="text-center">
+            <GoogleLogin
+              onSuccess={handleGoogleLoginSuccess}
+              onError={handleGoogleLoginFailure}
+            />
+          </div>
         </form>
       </div>
     </div>

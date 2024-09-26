@@ -2,54 +2,121 @@ import Accommodation from '../../models/Accommodation/Accommodation.js'
 import asyncWrapper from '../../middleware/Host/async.js'
 import cloudinary from '../../config/cloudinary.js'
 import { createCustomError } from '../../errors/Host/custom-error.js'
+import { body, validationResult } from 'express-validator'
+import fs from 'fs'
 
 // Register a new accommodation
-export const createaccommodation = asyncWrapper(async (req, res) => {
-  // const images = []
-  // if (req.files) {
-  //   for (const file of req.files) {
-  //     const result = await cloudinary.uploader.upload(file.path, {
-  //       folder: 'afAccommodation',
-  //     })
+// export const createaccommodation = asyncWrapper(async (req, res) => {
+//   const { name, description, address, area } = req.body
+//   const files = req.files
+//   let imagesArray = []
 
-  //     images.push(result.secure_url)
-  //   }
-  //   req.body.images = images
-  // } else {
-  //   req.body.images =
-  //     'https://res.cloudinary.com/itp03/image/upload/v1683405533/afAccommodation/cne6ckbce79pw54t2qfw.jpg'
-  // }
+//   for (let i = 0; i < files.length; i++) {
+//     const result = await cloudinary.uploader.upload(files[i].path, {
+//       folder: 'afAccommodation',
+//     })
+//     imagesArray.push(result.secure_url)
+//   }
 
-  const { name, description, address, area } = req.body
-  const files = req.files
-  let imagesArray = []
+//   try {
+//     const newAccommodation = new Accommodation({
+//       name,
+//       description,
+//       address,
+//       images: imagesArray,
+//       area,
+//     })
+//     await newAccommodation.save()
+//     res.json(newAccommodation)
+//   } catch (error) {
+//     console.error(error)
+//     res.status(500).send('Server error')
+//   }
 
-  for (let i = 0; i < files.length; i++) {
-    const result = await cloudinary.uploader.upload(files[i].path, {
-      folder: 'afAccommodation',
-    })
-    imagesArray.push(result.secure_url)
-  }
+//   // const accommodation = await Accommodation.create(req.body)
 
-  try {
-    const newAccommodation = new Accommodation({
-      name,
-      description,
-      address,
-      images: imagesArray,
-      area,
-    })
-    await newAccommodation.save()
-    res.json(newAccommodation)
-  } catch (error) {
-    console.error(error)
-    res.status(500).send('Server error')
-  }
+//   // res.status(201).json({ accommodation })
+// })
 
-  // const accommodation = await Accommodation.create(req.body)
+// modified code to fix the vulnerability
 
-  // res.status(201).json({ accommodation })
-})
+export const createaccommodation = [
+  // Validate fields
+  body('name').notEmpty().withMessage('Name is required'),
+  body('description').notEmpty().withMessage('Description is required'),
+  body('address').notEmpty().withMessage('Address is required'),
+
+  // Express Middleware to validate file size and type
+  asyncWrapper(async (req, res, next) => {
+    const files = req.files
+
+    // Validate that files exist
+    if (!files || files.length === 0) {
+      return res.status(400).json({ message: 'No images uploaded' })
+    }
+
+    const allowedExtensions = ['image/jpeg', 'image/png', 'image/gif']
+    const maxFileSize = 5 * 1024 * 1024 // 5MB size limit
+
+    // Validate files
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+
+      // Check file type
+      if (!allowedExtensions.includes(file.mimetype)) {
+        return res
+          .status(400)
+          .json({
+            message: 'Invalid file type. Only JPEG and PNG are allowed.',
+          })
+      }
+
+      // Check file size
+      if (file.size > maxFileSize) {
+        return res
+          .status(400)
+          .json({
+            message: `File size too large. Maximum allowed size is 5MB.`,
+          })
+      }
+    }
+
+    next() // Proceed to next middleware if validation passes
+  }),
+
+  // Upload images to Cloudinary and save accommodation
+  asyncWrapper(async (req, res) => {
+    const { name, description, address, area } = req.body
+    const files = req.files
+    let imagesArray = []
+
+    // Upload files to Cloudinary
+    for (let i = 0; i < files.length; i++) {
+      const result = await cloudinary.uploader.upload(files[i].path, {
+        folder: 'afAccommodation',
+      })
+      imagesArray.push(result.secure_url)
+
+      // Delete the temporary file from the server after upload
+      fs.unlinkSync(files[i].path)
+    }
+
+    try {
+      const newAccommodation = new Accommodation({
+        name,
+        description,
+        address,
+        images: imagesArray,
+        area,
+      })
+      await newAccommodation.save()
+      res.status(201).json(newAccommodation)
+    } catch (error) {
+      console.error(error)
+      res.status(500).send('Server error')
+    }
+  }),
+]
 
 //using errors custom-error.js for createCustomError
 //get a accommodation by id
