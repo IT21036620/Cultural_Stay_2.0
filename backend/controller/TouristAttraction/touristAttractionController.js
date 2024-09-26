@@ -1,51 +1,9 @@
 import TouristAttraction from '../../models/TouristAttraction/TouristAttraction.js'
 import cloudinary from '../../config/cloudinary.js'
-
-// get all tourist attractions with search and sort options passed as a query in the req
-// export const getAllTouristAttractions = async (req, res) => {
-//   const { name, address, area, sort, fields } = req.query
-//   const queryObject = {}
-
-//   if (name) {
-//     queryObject.name = { $regex: name, $options: 'i' }
-//   }
-
-//   if (address) {
-//     queryObject.address = { $regex: address, $options: 'i' }
-//   }
-
-//   if (area) {
-//     queryObject.area = { $regex: area, $options: 'i' }
-//   }
-
-//   // console.log(queryObject)
-
-//   let result = TouristAttraction.find(queryObject)
-
-//   // sort
-//   if (sort) {
-//     const sortList = sort.split(',').join(' ')
-//     result = result.sort(sortList)
-//   } else {
-//     result = result.sort('createdAt')
-//   }
-
-//   if (fields) {
-//     const fieldList = fields.split(',').join(' ')
-//     result = result.select(fieldList)
-//   }
-
-//   const touristAttractions = await result
-
-//   res
-//     .status(200)
-//     .json({ touristAttractions, nbHits: touristAttractions.length })
-// }
-
 import validator from 'validator';
 const { escape } = validator;
 
-
+// get all tourist attractions with search and sort options passed as a query in the req
 export const getAllTouristAttractions = async (req, res) => {
   const { name, address, area, sort, fields } = req.query;
   const queryObject = {};

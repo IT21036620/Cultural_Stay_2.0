@@ -1,6 +1,5 @@
 import Suggestions from '../../models/TouristAttraction/Suggestions.js'
 import cloudinary from '../../config/cloudinary.js'
-
 import validator from 'validator';
 const { escape } = validator;
 
@@ -15,17 +14,14 @@ export const getAllSuggestions = async (req, res) => {
     const sanitizedName = escape(name.toString());
     queryObject.name = { $regex: sanitizedName, $options: 'i' };
   }
-
   if (address) {
     const sanitizedAddress = escape(address.toString());
     queryObject.address = { $regex: sanitizedAddress, $options: 'i' };
   }
-
   if (area) {
     const sanitizedArea = escape(area.toString());
     queryObject.area = { $regex: sanitizedArea, $options: 'i' };
   }
-
   if (status) {
     const sanitizedStatus = escape(status.toString());
     queryObject.status = { $regex: sanitizedStatus, $options: 'i' };
