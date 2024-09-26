@@ -3,6 +3,10 @@ import asyncWrapper from '../../middleware/food/async.js'
 import cloudinary from '../../config/cloudinary.js'
 import { createCustomError } from '../../errors/Food/custom-error.js'
 
+//hotfix: validation and sanitization library
+import validator from 'validator';
+const { escape } = validator;
+
 // create a new product with checking image file
 export const createFood = asyncWrapper(async (req, res) => {
   // if (req.file) {
@@ -102,16 +106,20 @@ export const getAllFood = async (req, res) => {
   const queryObject = {}
 
   //hotfix: ReDoS vulnerability by limitting lenth of user input
+  //hotfix: sanitizing user inputs
   if (name && name.length <= 30) {
-    queryObject.name = { $regex: name, $options: 'i' }
+    const sanitizedName = escape(name.toString());
+    queryObject.name = { $regex: sanitizedName, $options: 'i' };
   }
 
   if (sinhala_name && sinhala_name.length <= 30) {
-    queryObject.sinhala_name = { $regex: sinhala_name, $options: 'i' }
+    const sanitizedSinhalaName = escape(sinhala_name.toString());
+    queryObject.sinhala_name = { $regex: sanitizedSinhalaName, $options: 'i' };
   }
 
   if (restaurants && restaurants.length <= 30) {
-    queryObject.restaurants = { $regex: restaurants, $options: 'i' }
+    const sanitizedRestaurants = escape(restaurants.toString());
+    queryObject.restaurants = { $regex: sanitizedRestaurants, $options: 'i' };
   }
 
   let result = Food.find(queryObject) // (req.query)
