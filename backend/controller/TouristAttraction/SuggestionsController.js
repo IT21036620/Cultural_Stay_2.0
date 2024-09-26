@@ -1,48 +1,59 @@
 import Suggestions from '../../models/TouristAttraction/Suggestions.js'
 import cloudinary from '../../config/cloudinary.js'
+import validator from 'validator';
+const { escape } = validator;
 
+//hotfix: user input validation and sanitization
 // get all tourist attraction Suggestions with search and sort options passed as a query in the req
 export const getAllSuggestions = async (req, res) => {
-  const { name, address, area, status, sort, fields } = req.query
-  const queryObject = {}
+  const { name, address, area, status, sort, fields } = req.query;
+  const queryObject = {};
 
+  // Sanitize and validate inputs
   if (name) {
-    queryObject.name = { $regex: name, $options: 'i' }
+    const sanitizedName = escape(name.toString());
+    queryObject.name = { $regex: sanitizedName, $options: 'i' };
   }
-
   if (address) {
-    queryObject.address = { $regex: address, $options: 'i' }
+    const sanitizedAddress = escape(address.toString());
+    queryObject.address = { $regex: sanitizedAddress, $options: 'i' };
   }
-
   if (area) {
-    queryObject.area = { $regex: area, $options: 'i' }
+    const sanitizedArea = escape(area.toString());
+    queryObject.area = { $regex: sanitizedArea, $options: 'i' };
   }
-
   if (status) {
-    queryObject.status = { $regex: status, $options: 'i' }
+    const sanitizedStatus = escape(status.toString());
+    queryObject.status = { $regex: sanitizedStatus, $options: 'i' };
   }
 
-  // console.log(queryObject)
+  let result = Suggestions.find(queryObject);
 
-  let result = Suggestions.find(queryObject)
-
-  // sort
+  // Sort validation
   if (sort) {
-    const sortList = sort.split(',').join(' ')
-    result = result.sort(sortList)
+    const allowedSortFields = ['name', 'address', 'area', 'status', 'createdAt'];
+    const sortList = sort.split(',').filter(field => allowedSortFields.includes(field)).join(' ');
+    if (sortList) {
+      result = result.sort(sortList);
+    }
   } else {
-    result = result.sort('createdAt')
+    result = result.sort('createdAt');
   }
 
+  // Fields validation
   if (fields) {
-    const fieldList = fields.split(',').join(' ')
-    result = result.select(fieldList)
+    const allowedFields = ['name', 'address', 'area', 'status', 'createdAt'];
+    const fieldList = fields.split(',').filter(field => allowedFields.includes(field)).join(' ');
+    if (fieldList) {
+      result = result.select(fieldList);
+    }
   }
 
-  const suggestions = await result
+  const suggestions = await result;
 
-  res.status(200).json({ suggestions, nbHits: suggestions.length })
-}
+  res.status(200).json({ suggestions, nbHits: suggestions.length });
+};
+
 
 // Get single tourists attraction Suggestions by Id
 export const getSuggestionsById = async (req, res) => {
