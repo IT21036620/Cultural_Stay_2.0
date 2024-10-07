@@ -67,9 +67,6 @@ const ReserveForm = () => {
         setRp_noofPassengers('')
       })
       .catch((err) => {
-        console.log('error')
-
-        // Use a proper error messages when the error is thrown
         window.alert('Failed to submit reservation. Please try again later.')
       })
   }

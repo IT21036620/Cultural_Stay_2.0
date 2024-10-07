@@ -69,10 +69,58 @@ export default function Login() {
       }
     }
   }
+
   //---------------------------------handle successful Google login response----------------------------------------------
-  const handleGoogleLoginSuccess = (response) => {
+  const handleGoogleLoginSuccess = async (response) => {
     const credentialresponsedecode = jwtDecode(response.credential)
-    console.log(credentialresponsedecode)
+    console.log(credentialresponsedecode.email)
+
+    // const googleToken = response.credential
+    // console.log('Google token:', googleToken)
+
+    try {
+      const response = await axios.post(
+        // 'https://fine-teal-ostrich-tam.cyclic.app/api/user/login',
+        'http://localhost:4000/api/user/login',
+        { user: credentialresponsedecode.email, pwd: '12345678' }
+      )
+      const userName = response?.data?.username
+      console.log(userName)
+      // const userName = response?.data?.username
+      const role = response?.data?.role
+      console.log(role)
+      setAuth({ user, role, userName })
+      setUser('')
+      setPwd('')
+
+      switch (role) {
+        case 'admin':
+          navigate('/admin')
+          break
+        case 'tourist':
+          navigate('/')
+          break
+        case 'host':
+          navigate('/hostDashboardProfile')
+          break
+        default:
+          navigate('/')
+      }
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg('Server Error')
+      } else if (err.response?.status === 400) {
+        setErrMsg('Username or password required')
+      } else if (err.response?.status === 401) {
+        setErrMsg('Invalid username or password')
+      } else {
+        setErrMsg('Login Failed')
+      }
+
+      // const { username, useremail, role } = res.data
+      // setAuth({ user: useremail, role, username })
+      // navigate('/accommodationHome')
+    }
   }
 
   const handleGoogleLoginFailure = (error) => {

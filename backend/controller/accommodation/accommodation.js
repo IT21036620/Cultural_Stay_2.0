@@ -46,7 +46,6 @@ export const createaccommodation = [
   body('description').notEmpty().withMessage('Description is required'),
   body('address').notEmpty().withMessage('Address is required'),
 
-  // Express Middleware to validate file size and type
   asyncWrapper(async (req, res, next) => {
     const files = req.files
 
@@ -55,8 +54,8 @@ export const createaccommodation = [
       return res.status(400).json({ message: 'No images uploaded' })
     }
 
-    const allowedExtensions = ['image/jpeg', 'image/png', 'image/gif']
-    const maxFileSize = 5 * 1024 * 1024 // 5MB size limit
+    const allowedExtensions = ['image/jpeg', 'image/png']
+    const maxFileSize = 5 * 1024 * 1024 // 5MB
 
     // Validate files
     for (let i = 0; i < files.length; i++) {
@@ -64,24 +63,20 @@ export const createaccommodation = [
 
       // Check file type
       if (!allowedExtensions.includes(file.mimetype)) {
-        return res
-          .status(400)
-          .json({
-            message: 'Invalid file type. Only JPEG and PNG are allowed.',
-          })
+        return res.status(400).json({
+          message: 'Invalid file type. Only JPEG and PNG are allowed.',
+        })
       }
 
       // Check file size
       if (file.size > maxFileSize) {
-        return res
-          .status(400)
-          .json({
-            message: `File size too large. Maximum allowed size is 5MB.`,
-          })
+        return res.status(400).json({
+          message: `File size too large. Maximum allowed size is 5MB.`,
+        })
       }
     }
 
-    next() // Proceed to next middleware if validation passes
+    next()
   }),
 
   // Upload images to Cloudinary and save accommodation
