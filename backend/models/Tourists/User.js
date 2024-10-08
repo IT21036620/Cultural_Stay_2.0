@@ -22,6 +22,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
+  social_id: {
+    type: String,
+    required: false,
+    default: '',
+  },
 })
 
 // module.exports = mongoose.model('User', UserSchema)

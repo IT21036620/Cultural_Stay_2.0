@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Video from '../../Assets/v1.mp4'
 import PlacesList from '../../components/Home/popularPlaces'
 import FoodsList from '../../components/Home/featuredFoods'
@@ -7,6 +7,18 @@ import HomeReview from '../../components/HomeReview/HomeReview.js'
 // import './home.css'
 
 export const Home = () => {
+  useEffect(() => {
+    // extract jwt token from url query parameters
+    const urlParams = new URLSearchParams(window.location.search)
+    const token = urlParams.get('token')
+
+    // store the token in local storage
+    if (token) {
+      localStorage.setItem('jwt', token)
+      //window.location.replace('/dashboard') 
+    }
+  }, [])
+
   return (
     <div className="">
       <div className="relative inset-0 overflow-hidden w-screen">

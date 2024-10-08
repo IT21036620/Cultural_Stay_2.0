@@ -21,6 +21,7 @@ app.use((req, res, next) => {
     return next()
   }
 
+  //https validation
   // res.status(403).send({
   //   error: 'HTTPS required',
   //   message: 'This endpoint requires a secure connection. Please use HTTPS.',

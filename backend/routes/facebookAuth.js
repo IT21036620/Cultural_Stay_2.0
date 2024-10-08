@@ -2,6 +2,7 @@ import express from 'express'
 import passport from 'passport'
 import { Strategy as FacebookStrategy } from 'passport-facebook'
 import jwt from 'jsonwebtoken'
+import User from '../models/Tourists/User.js'
 
 const router = express.Router()
 
@@ -38,16 +39,37 @@ router.get('/auth/facebook', passport.authenticate('facebook'))
 router.get(
   '/auth/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/' }),
-  (req, res) => {
-    // On successful login, generate JWT token
+  async (req, res) => {
+    // Generate jwt token for successful login
     const token = jwt.sign(
       { id: req.user.id, name: req.user.displayName },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     )
 
-    // Respond with the JWT token
-    res.json({ result: [token] })
+    // Retrieve Facebook user ID
+    const fbId = req.user.id
+
+    try {
+      // get user from the database
+      const socialUser = await User.findOne({ social_id: fbId })
+
+      if (socialUser == null) {
+        // If user is not found in the system
+        return res
+          .status(404)
+          .json({
+            user: 'User Facebook account is not registered in the system',
+          })
+      }
+
+      // If user is found redirect to frontend with token as query parameter
+      const frontendUrl = `http://localhost:3000?token=${token}`
+      return res.redirect(frontendUrl)
+    } catch (error) {
+      // Handle any database errors
+      return res.status(500).json({ error: 'Internal server error' })
+    }
   }
 )
 
